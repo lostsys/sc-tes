@@ -1,4 +1,7 @@
 let replacements = {};
+let dumpedVarNames = {};
+const storeName = "a" + crypto.randomUUID().replaceAll("-", "").substring(16);
+const vapeName = crypto.randomUUID().replaceAll("-", "").substring(16);
 
 // ANTICHEAT HOOK
 function replaceAndCopyFunction(oldFunc, newFunc) {
@@ -54,6 +57,32 @@ function modifyCode(text) {
 	newScript.textContent = "";
 	newScript.remove();
 }
+
+(function() {
+	'use strict';
+
+	// DUMPING
+	addDump('moveStrafeDump', 'strafe:this\.([a-zA-Z]*)');
+	addDump('moveForwardDump', 'forward:this\.([a-zA-Z]*)');
+	addDump('keyPressedDump', 'function ([a-zA-Z]*)\\(j\\)\{return keyPressed\\(j\\)');
+	addDump('entitiesDump', 'this\.([a-zA-Z]*)\.values\\(\\)\\)nt instanceof EntityTNTPrimed');
+	addDump('isInvisibleDump', 'ot\.([a-zA-Z]*)\\(\\)\\)&&\\(pt=new ([a-zA-Z]*)\\(new');
+	addDump('attackDump', 'hitVec.z\}\\)\}\\)\\),player\\$1\.([a-zA-Z]*)');
+	addDump('lastReportedYawDump', 'this\.([a-zA-Z]*)=this\.yaw,this\.last');
+	addDump('windowClickDump', '([a-zA-Z]*)\\(this\.inventorySlots\.windowId');
+	addDump('playerControllerDump', 'const ([a-zA-Z]*)=new PlayerController,');
+	addDump('damageReduceAmountDump', 'ItemArmor&&\\(tt\\+\\=it\.([a-zA-Z]*)');
+	addDump('boxGeometryDump', 'ot=new Mesh\\(new ([a-zA-Z]*)\\(1');
+	addDump('syncItemDump', 'playerControllerMP\.([a-zA-Z]*)\\(\\),ClientSocket\.sendPacket');
+
+	// PRE
+	addReplacement('document.addEventListener("DOMContentLoaded",startGame,!1);', `
+		setTimeout(function() {
+			var DOMContentLoaded_event = document.createEvent("Event");
+			DOMContentLoaded_event.initEvent("DOMContentLoaded", true, true);
+			document.dispatchEvent(DOMContentLoaded_event);
+		}, 0);
+	`);
 
 addReplacement('async loadSpritesheet(){', `
     async loadSpritesheet() {
