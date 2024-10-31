@@ -115,19 +115,6 @@ addReplacement('async loadSpritesheet(){', `
     }
 `, true);
 
-
-(function() {
-	'use strict';
-
-	// PRE
-	addReplacement('document.addEventListener("DOMContentLoaded",startGame,!1);', `
-		setTimeout(function() {
-			var DOMContentLoaded_event = document.createEvent("Event");
-			DOMContentLoaded_event.initEvent("DOMContentLoaded", true, true);
-			document.dispatchEvent(DOMContentLoaded_event);
-		}, 0);
-	`);
-
 	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,64,3)', true);
 
 	const publicUrl = "scripturl";
