@@ -1,5 +1,4 @@
 let replacements = {};
-let dumpedVarNames = {};
 const storeName = "a" + crypto.randomUUID().replaceAll("-", "").substring(16);
 
 // ANTICHEAT HOOK
