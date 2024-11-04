@@ -31,8 +31,6 @@ function modifyCode(text) {
 	`);
 	addReplacement('this.loader.loadAsync("textures/spritesheet.png")', 'this.loader.loadAsync("https://raw.githubusercontent.com/lostsys/sc-tes/main/spritesheet.png")', true);
 	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,32,3)', true);
-	addReplacement('mt.enabled === !1', 'mt.enabled === !1', true);
-	addReplacement('this.enabled = !1,', 'this.enabled = !0,', true);
 
 	async function execute(src, oldScript) {
 		if (oldScript) oldScript.type = 'javascript/blocked';
