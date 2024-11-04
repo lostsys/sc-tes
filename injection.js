@@ -30,9 +30,9 @@ function modifyCode(text) {
 		}, 0);
 	`);
 	addReplacement('this.loader.loadAsync("textures/spritesheet.png")', 'this.loader.loadAsync("https://raw.githubusercontent.com/lostsys/sc-tes/main/spritesheet.png")', true);
-	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,16,3)', true);
-	addReplacement('"foliageColor", 31744', '"foliageColor", 16777215', true);
-	addReplacement('"grassColor", 8368696', '"grassColor", 16777215', true);
+	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,64,3)', true);
+	addReplacement('(MapColor, "foliageColor", 31744)', '(MapColor, "foliageColor", 16777215)', true);
+	addReplacement('(MapColor, "grassColor", 8368696)', '(MapColor, "grassColor", 16777215)', true);
 
 	async function execute(src, oldScript) {
 		if (oldScript) oldScript.type = 'javascript/blocked';
