@@ -1,28 +1,12 @@
 let replacements = {};
-let dumpedVarNames = {};
 const storeName = "a" + crypto.randomUUID().replaceAll("-", "").substring(16);
 
 function addReplacement(replacement, code, replaceit) {
 	replacements[replacement] = [code, replaceit];
 }
 
-function addDump(replacement, code) {
-	dumpedVarNames[replacement] = code;
-}
-
 function modifyCode(text) {
-	for(const [name, regex] of Object.entries(dumpedVarNames)){
-		const matched = text.match(regex);
-		if (matched) {
-			console.log(name, regex, matched);
-			for(const [replacement, code] of Object.entries(replacements)){
-				delete replacements[replacement];
-				replacements[replacement.replaceAll(name, matched[1])] = [code[0].replaceAll(name, matched[1]), code[1]];
-			}
-		}
-	}
-
-	for(const [replacement, code] of Object.entries(replacements)){
+	for (const [replacement, code] of Object.entries(replacements)) {
 		text = text.replaceAll(replacement, code[1] ? code[0] : replacement + code[0]);
 	}
 
@@ -35,6 +19,7 @@ function modifyCode(text) {
 	newScript.textContent = "";
 	newScript.remove();
 }
+
 
 (function() {
 	'use strict';
