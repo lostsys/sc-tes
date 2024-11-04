@@ -1,7 +1,9 @@
 let replacements = {};
 let dumpedVarNames = {};
 const storeName = "a" + crypto.randomUUID().replaceAll("-", "").substring(16);
+const vapeName = crypto.randomUUID().replaceAll("-", "").substring(16);
 
+// ANTICHEAT HOOK
 function replaceAndCopyFunction(oldFunc, newFunc) {
 	return new Proxy(oldFunc, {
 		apply(orig, origIden, origArgs) {
@@ -59,19 +61,7 @@ function modifyCode(text) {
 (function() {
 	'use strict';
 
-	addDump('moveStrafeDump', 'strafe:this\.([a-zA-Z]*)');
-	addDump('moveForwardDump', 'forward:this\.([a-zA-Z]*)');
-	addDump('keyPressedDump', 'function ([a-zA-Z]*)\\(j\\)\{return keyPressed\\(j\\)');
-	addDump('entitiesDump', 'this\.([a-zA-Z]*)\.values\\(\\)\\)nt instanceof EntityTNTPrimed');
-	addDump('isInvisibleDump', 'ot\.([a-zA-Z]*)\\(\\)\\)&&\\(pt=new ([a-zA-Z]*)\\(new');
-	addDump('attackDump', 'hitVec.z\}\\)\}\\)\\),player\\$1\.([a-zA-Z]*)');
-	addDump('lastReportedYawDump', 'this\.([a-zA-Z]*)=this\.yaw,this\.last');
-	addDump('windowClickDump', '([a-zA-Z]*)\\(this\.inventorySlots\.windowId');
-	addDump('playerControllerDump', 'const ([a-zA-Z]*)=new PlayerController,');
-	addDump('damageReduceAmountDump', 'ItemArmor&&\\(tt\\+\\=it\.([a-zA-Z]*)');
-	addDump('boxGeometryDump', 'ot=new Mesh\\(new ([a-zA-Z]*)\\(1');
-	addDump('syncItemDump', 'playerControllerMP\.([a-zA-Z]*)\\(\\),ClientSocket\.sendPacket');
-
+	// PRE
 	addReplacement('document.addEventListener("DOMContentLoaded",startGame,!1);', `
 		setTimeout(function() {
 			var DOMContentLoaded_event = document.createEvent("Event");
@@ -81,6 +71,21 @@ function modifyCode(text) {
 	`);
 	addReplacement('this.loader.loadAsync("textures/spritesheet.png")', 'this.loader.loadAsync("https://raw.githubusercontent.com/lostsys/sc-tes/main/spritesheet.png")', true);
 	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,64,3)', true);
+
+	async function execute(src, oldScript) {
+		Object.defineProperty(unsafeWindow.globalThis, storeName, {value: {}, enumerable: false});
+		if (oldScript) oldScript.type = 'javascript/blocked';
+		await fetch(src).then(e => e.text()).then(e => modifyCode(e));
+		if (oldScript) oldScript.type = 'module';
+		await new Promise((resolve) => {
+			const loop = setInterval(async function() {
+				if (unsafeWindow.globalThis[storeName].modules) {
+					clearInterval(loop);
+					resolve();
+				}
+			}, 10);
+		});
+	}
 
 	const publicUrl = "scripturl";
 	// https://stackoverflow.com/questions/22141205/intercept-and-alter-a-sites-javascript-using-greasemonkey
