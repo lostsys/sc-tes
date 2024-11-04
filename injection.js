@@ -1,5 +1,4 @@
 let replacements = {};
-const storeName = "a" + crypto.randomUUID().replaceAll("-", "").substring(16);
 
 function addReplacement(replacement, code, replaceit) {
 	replacements[replacement] = [code, replaceit];
@@ -20,7 +19,6 @@ function modifyCode(text) {
 	newScript.remove();
 }
 
-
 (function() {
 	'use strict';
 
@@ -35,19 +33,10 @@ function modifyCode(text) {
 	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,32,3)', true);
 
 	async function execute(src, oldScript) {
-		Object.defineProperty(unsafeWindow.globalThis, storeName, {value: {}, enumerable: false});
 		if (oldScript) oldScript.type = 'javascript/blocked';
 		await fetch(src).then(e => e.text()).then(e => modifyCode(e));
 		if (oldScript) oldScript.type = 'module';
-		await new Promise((resolve) => {
-			const loop = setInterval(async function() {
-				if (unsafeWindow.globalThis[storeName].modules) {
-					clearInterval(loop);
-					resolve();
 				}
-			}, 10);
-		});
-	}
 
 	const publicUrl = "scripturl";
 	// https://stackoverflow.com/questions/22141205/intercept-and-alter-a-sites-javascript-using-greasemonkey
