@@ -70,7 +70,7 @@ function modifyCode(text) {
 		}, 0);
 	`);
 
-	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,32,3)', true);
+	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,64,3)', true);
 
 	const publicUrl = "scripturl";
 	// https://stackoverflow.com/questions/22141205/intercept-and-alter-a-sites-javascript-using-greasemonkey
