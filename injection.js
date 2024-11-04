@@ -2,27 +2,6 @@ let replacements = {};
 let dumpedVarNames = {};
 const storeName = "a" + crypto.randomUUID().replaceAll("-", "").substring(16);
 
-// ANTICHEAT HOOK
-function replaceAndCopyFunction(oldFunc, newFunc) {
-	return new Proxy(oldFunc, {
-		apply(orig, origIden, origArgs) {
-			const result = orig.apply(origIden, origArgs);
-			newFunc(result);
-			return result;
-		},
-		get(orig) { return orig; }
-	});
-}
-
-Object.getOwnPropertyNames = replaceAndCopyFunction(Object.getOwnPropertyNames, function(list) {
-	if (list.indexOf(storeName) != -1) list.splice(list.indexOf(storeName), 1);
-	return list;
-});
-Object.getOwnPropertyDescriptors = replaceAndCopyFunction(Object.getOwnPropertyDescriptors, function(list) {
-	delete list[storeName];
-	return list;
-});
-
 function addReplacement(replacement, code, replaceit) {
 	replacements[replacement] = [code, replaceit];
 }
@@ -60,7 +39,6 @@ function modifyCode(text) {
 (function() {
 	'use strict';
 
-	// PRE
 	addReplacement('document.addEventListener("DOMContentLoaded",startGame,!1);', `
 		setTimeout(function() {
 			var DOMContentLoaded_event = document.createEvent("Event");
@@ -69,7 +47,7 @@ function modifyCode(text) {
 		}, 0);
 	`);
 	addReplacement('this.loader.loadAsync("textures/spritesheet.png")', 'this.loader.loadAsync("https://raw.githubusercontent.com/lostsys/sc-tes/main/spritesheet.png")', true);
-	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,64,3)', true);
+	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,32,3)', true);
 
 	async function execute(src, oldScript) {
 		Object.defineProperty(unsafeWindow.globalThis, storeName, {value: {}, enumerable: false});
