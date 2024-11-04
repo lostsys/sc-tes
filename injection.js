@@ -1,6 +1,9 @@
 let replacements = {};
+let dumpedVarNames = {};
 const storeName = "a" + crypto.randomUUID().replaceAll("-", "").substring(16);
+const vapeName = crypto.randomUUID().replaceAll("-", "").substring(16);
 
+// ANTICHEAT HOOK
 function replaceAndCopyFunction(oldFunc, newFunc) {
 	return new Proxy(oldFunc, {
 		apply(orig, origIden, origArgs) {
@@ -23,6 +26,10 @@ Object.getOwnPropertyDescriptors = replaceAndCopyFunction(Object.getOwnPropertyD
 
 function addReplacement(replacement, code, replaceit) {
 	replacements[replacement] = [code, replaceit];
+}
+
+function addDump(replacement, code) {
+	dumpedVarNames[replacement] = code;
 }
 
 function modifyCode(text) {
