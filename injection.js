@@ -31,16 +31,7 @@ function modifyCode(text) {
 	`);
 	//addReplacement('this.loader.loadAsync("textures/spritesheet.png")', 'this.loader.loadAsync("https://raw.githubusercontent.com/lostsys/sc-tes/main/spritesheet.png")', true);
 	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,16,3)', true);
-	addReplacement(`colorMultiplier($, et) {
-            return {
-                r: 80,
-                g: 180,
-                b: 40`, `
-        colorMultiplier($, et) {
-            return {
-                r: 0,
-                g: 0,
-                b: 0`, true);
+	addReplacement('b: 40', 'b: 255', true);
 
 	async function execute(src, oldScript) {
 		if (oldScript) oldScript.type = 'javascript/blocked';
