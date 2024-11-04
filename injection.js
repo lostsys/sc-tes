@@ -1,9 +1,7 @@
 let replacements = {};
 let dumpedVarNames = {};
 const storeName = "a" + crypto.randomUUID().replaceAll("-", "").substring(16);
-const vapeName = crypto.randomUUID().replaceAll("-", "").substring(16);
 
-// ANTICHEAT HOOK
 function replaceAndCopyFunction(oldFunc, newFunc) {
 	return new Proxy(oldFunc, {
 		apply(orig, origIden, origArgs) {
@@ -61,7 +59,6 @@ function modifyCode(text) {
 (function() {
 	'use strict';
 
-	// DUMPING
 	addDump('moveStrafeDump', 'strafe:this\.([a-zA-Z]*)');
 	addDump('moveForwardDump', 'forward:this\.([a-zA-Z]*)');
 	addDump('keyPressedDump', 'function ([a-zA-Z]*)\\(j\\)\{return keyPressed\\(j\\)');
@@ -75,7 +72,6 @@ function modifyCode(text) {
 	addDump('boxGeometryDump', 'ot=new Mesh\\(new ([a-zA-Z]*)\\(1');
 	addDump('syncItemDump', 'playerControllerMP\.([a-zA-Z]*)\\(\\),ClientSocket\.sendPacket');
 
-	// PRE
 	addReplacement('document.addEventListener("DOMContentLoaded",startGame,!1);', `
 		setTimeout(function() {
 			var DOMContentLoaded_event = document.createEvent("Event");
