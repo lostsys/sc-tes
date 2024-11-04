@@ -1,5 +1,4 @@
 let replacements = {};
-const storeName = "a" + crypto.randomUUID().replaceAll("-", "").substring(16);
 
 // ANTICHEAT HOOK
 function replaceAndCopyFunction(oldFunc, newFunc) {
@@ -12,15 +11,6 @@ function replaceAndCopyFunction(oldFunc, newFunc) {
 		get(orig) { return orig; }
 	});
 }
-
-Object.getOwnPropertyNames = replaceAndCopyFunction(Object.getOwnPropertyNames, function(list) {
-	if (list.indexOf(storeName) != -1) list.splice(list.indexOf(storeName), 1);
-	return list;
-});
-Object.getOwnPropertyDescriptors = replaceAndCopyFunction(Object.getOwnPropertyDescriptors, function(list) {
-	delete list[storeName];
-	return list;
-});
 
 function addReplacement(replacement, code, replaceit) {
 	replacements[replacement] = [code, replaceit];
