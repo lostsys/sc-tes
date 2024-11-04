@@ -1,6 +1,5 @@
 let replacements = {};
 
-// ANTICHEAT HOOK
 function replaceAndCopyFunction(oldFunc, newFunc) {
 	return new Proxy(oldFunc, {
 		apply(orig, origIden, origArgs) {
@@ -45,7 +44,6 @@ function modifyCode(text) {
 (function() {
 	'use strict';
 
-	// PRE
 	addReplacement('document.addEventListener("DOMContentLoaded",startGame,!1);', `
 		setTimeout(function() {
 			var DOMContentLoaded_event = document.createEvent("Event");
@@ -53,7 +51,9 @@ function modifyCode(text) {
 			document.dispatchEvent(DOMContentLoaded_event);
 		}, 0);
 	`);
+	
 	addReplacement('this.loader.loadAsync("textures/spritesheet.png")', 'this.loader.loadAsync("https://raw.githubusercontent.com/lostsys/sc-tes/main/spritesheet.png")', true);
+	
 	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,64,3)', true);
 	
 	
