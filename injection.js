@@ -1,7 +1,6 @@
 let replacements = {};
 let dumpedVarNames = {};
 const storeName = "a" + crypto.randomUUID().replaceAll("-", "").substring(16);
-const vapeName = crypto.randomUUID().replaceAll("-", "").substring(16);
 
 // ANTICHEAT HOOK
 function replaceAndCopyFunction(oldFunc, newFunc) {
@@ -72,6 +71,28 @@ function modifyCode(text) {
 	addReplacement('this.loader.loadAsync("textures/spritesheet.png")', 'this.loader.loadAsync("https://raw.githubusercontent.com/lostsys/sc-tes/main/spritesheet.png")', true);
 	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,64,3)', true);
 
+let loadedConfig = false;
+
+async function execute(src, oldScript) {
+    Object.defineProperty(unsafeWindow.globalThis, storeName, {value: {}, enumerable: false});
+    if (oldScript) oldScript.type = 'javascript/blocked';
+    await fetch(src).then(e => e.text()).then(e => modifyCode(e));
+    if (oldScript) oldScript.type = 'module';
+
+    await new Promise((resolve) => {
+        const loop = setInterval(async function() {
+            if (unsafeWindow.globalThis[storeName].modules) {
+                clearInterval(loop);
+                resolve();
+            }
+        }, 10);
+    });
+
+    loadConfig();
+    setInterval(async function() {
+        saveConfig();
+    }, 10000);
+}
 	const publicUrl = "scripturl";
 	// https://stackoverflow.com/questions/22141205/intercept-and-alter-a-sites-javascript-using-greasemonkey
 	if (publicUrl == "scripturl") {
