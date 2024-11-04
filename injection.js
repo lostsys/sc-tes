@@ -70,29 +70,81 @@ function modifyCode(text) {
 	`);
 	addReplacement('this.loader.loadAsync("textures/spritesheet.png")', 'this.loader.loadAsync("https://raw.githubusercontent.com/lostsys/sc-tes/main/spritesheet.png")', true);
 	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,64,3)', true);
+	
+	async function saveVapeConfig(profile) {
+		if (!loadedConfig) return;
+		let saveList = {};
+		for(const [name, module] of Object.entries(unsafeWindow.globalThis[storeName].modules)) {
+			saveList[name] = {enabled: module.enabled, bind: module.bind, options: {}};
+			for(const [option, setting] of Object.entries(module.options)) {
+				saveList[name].options[option] = setting[1];
+			}
+		}
+		GM_setValue("vapeConfig" + (profile ?? unsafeWindow.globalThis[storeName].profile), JSON.stringify(saveList));
+		GM_setValue("mainVapeConfig", JSON.stringify({profile: unsafeWindow.globalThis[storeName].profile}));
+	};
 
-let loadedConfig = false;
+	async function loadVapeConfig(switched) {
+		loadedConfig = false;
+		const loadedMain = JSON.parse(await GM_getValue("mainVapeConfig", "{}")) ?? {profile: "default"};
+		unsafeWindow.globalThis[storeName].profile = switched ?? loadedMain.profile;
+		const loaded = JSON.parse(await GM_getValue("vapeConfig" + unsafeWindow.globalThis[storeName].profile, "{}"));
+		if (!loaded) {
+			loadedConfig = true;
+			return;
+		}
 
-async function execute(src, oldScript) {
-    Object.defineProperty(unsafeWindow.globalThis, storeName, {value: {}, enumerable: false});
-    if (oldScript) oldScript.type = 'javascript/blocked';
-    await fetch(src).then(e => e.text()).then(e => modifyCode(e));
-    if (oldScript) oldScript.type = 'module';
+		for(const [name, module] of Object.entries(loaded)) {
+			const realModule = unsafeWindow.globalThis[storeName].modules[name];
+			if (!realModule) continue;
+			if (realModule.enabled != module.enabled) realModule.toggle();
+			if (realModule.bind != module.bind) realModule.setbind(module.bind);
+			if (module.options) {
+				for(const [option, setting] of Object.entries(module.options)) {
+					const realOption = realModule.options[option];
+					if (!realOption) continue;
+					realOption[1] = setting;
+				}
+			}
+		}
+		loadedConfig = true;
+	};
 
-    await new Promise((resolve) => {
-        const loop = setInterval(async function() {
-            if (unsafeWindow.globalThis[storeName].modules) {
-                clearInterval(loop);
-                resolve();
-            }
-        }, 10);
-    });
+	async function exportVapeConfig() {
+		navigator.clipboard.writeText(await GM_getValue("vapeConfig" + unsafeWindow.globalThis[storeName].profile, "{}"));
+	};
 
-    loadConfig();
-    setInterval(async function() {
-        saveConfig();
-    }, 10000);
-}
+	async function importVapeConfig() {
+		const arg = await navigator.clipboard.readText();
+		if (!arg) return;
+		GM_setValue("vapeConfig" + unsafeWindow.globalThis[storeName].profile, arg);
+		loadVapeConfig();
+	};
+
+	let loadedConfig = false;
+	async function execute(src, oldScript) {
+		Object.defineProperty(unsafeWindow.globalThis, storeName, {value: {}, enumerable: false});
+		if (oldScript) oldScript.type = 'javascript/blocked';
+		await fetch(src).then(e => e.text()).then(e => modifyCode(e));
+		if (oldScript) oldScript.type = 'module';
+		await new Promise((resolve) => {
+			const loop = setInterval(async function() {
+				if (unsafeWindow.globalThis[storeName].modules) {
+					clearInterval(loop);
+					resolve();
+				}
+			}, 10);
+		});
+		unsafeWindow.globalThis[storeName].saveVapeConfig = saveVapeConfig;
+		unsafeWindow.globalThis[storeName].loadVapeConfig = loadVapeConfig;
+		unsafeWindow.globalThis[storeName].exportVapeConfig = exportVapeConfig;
+		unsafeWindow.globalThis[storeName].importVapeConfig = importVapeConfig;
+		loadVapeConfig();
+		setInterval(async function() {
+			saveVapeConfig();
+		}, 10000);
+	}
+	
 	const publicUrl = "scripturl";
 	// https://stackoverflow.com/questions/22141205/intercept-and-alter-a-sites-javascript-using-greasemonkey
 	if (publicUrl == "scripturl") {
