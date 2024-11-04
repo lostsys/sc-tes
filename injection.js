@@ -1,4 +1,16 @@
 let replacements = {};
+const storeName = "a" + crypto.randomUUID().replaceAll("-", "").substring(16);
+
+function replaceAndCopyFunction(oldFunc, newFunc) {
+	return new Proxy(oldFunc, {
+		apply(orig, origIden, origArgs) {
+			const result = orig.apply(origIden, origArgs);
+			newFunc(result);
+			return result;
+		},
+		get(orig) { return orig; }
+	});
+}
 
 Object.getOwnPropertyNames = replaceAndCopyFunction(Object.getOwnPropertyNames, function(list) {
 	if (list.indexOf(storeName) != -1) list.splice(list.indexOf(storeName), 1);
