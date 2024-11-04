@@ -29,7 +29,7 @@ function modifyCode(text) {
 			document.dispatchEvent(DOMContentLoaded_event);
 		}, 0);
 	`);
-	addReplacement('this.loader.loadAsync("textures/spritesheet.png")', 'this.loader.loadAsync("https://raw.githubusercontent.com/lostsys/sc-tes/main/spritesheet.png")', true);
+	//addReplacement('this.loader.loadAsync("textures/spritesheet.png")', 'this.loader.loadAsync("https://raw.githubusercontent.com/lostsys/sc-tes/main/spritesheet.png")', true);
 	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,64,3)', true);
 	addReplacement('(MapColor, "foliageColor", 31744)', '(MapColor, "foliageColor", 16777215)', true);
 	addReplacement('(MapColor, "grassColor", 8368696)', '(MapColor, "grassColor", 16777215)', true);
