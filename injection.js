@@ -1,19 +1,22 @@
 let replacements = {};
 let dumpedVarNames = {};
 const storeName = "a" + crypto.randomUUID().replaceAll("-", "").substring(16);
+const vapeName = crypto.randomUUID().replaceAll("-", "").substring(16);
 
+// ANTICHEAT HOOK
 function replaceAndCopyFunction(oldFunc, newFunc) {
 	return new Proxy(oldFunc, {
 		apply(orig, origIden, origArgs) {
 			const result = orig.apply(origIden, origArgs);
 			newFunc(result);
 			return result;
-		}
+		},
+		get(orig) { return orig; }
 	});
 }
 
 Object.getOwnPropertyNames = replaceAndCopyFunction(Object.getOwnPropertyNames, function(list) {
-	if (list.includes(storeName)) list.splice(list.indexOf(storeName), 1);
+	if (list.indexOf(storeName) != -1) list.splice(list.indexOf(storeName), 1);
 	return list;
 });
 Object.getOwnPropertyDescriptors = replaceAndCopyFunction(Object.getOwnPropertyDescriptors, function(list) {
@@ -30,31 +33,35 @@ function addDump(replacement, code) {
 }
 
 function modifyCode(text) {
-	for (const [name, regex] of Object.entries(dumpedVarNames)) {
+	for(const [name, regex] of Object.entries(dumpedVarNames)){
 		const matched = text.match(regex);
 		if (matched) {
 			console.log(name, regex, matched);
-			for (const [replacement, code] of Object.entries(replacements)) {
+			for(const [replacement, code] of Object.entries(replacements)){
 				delete replacements[replacement];
 				replacements[replacement.replaceAll(name, matched[1])] = [code[0].replaceAll(name, matched[1]), code[1]];
 			}
 		}
 	}
 
-	for (const [replacement, code] of Object.entries(replacements)) {
+	for(const [replacement, code] of Object.entries(replacements)){
 		text = text.replaceAll(replacement, code[1] ? code[0] : replacement + code[0]);
 	}
 
-	const newScript = document.createElement("script");
+	var newScript = document.createElement("script");
 	newScript.type = "module";
+	newScript.crossOrigin = "";
 	newScript.textContent = text;
-	document.head.appendChild(newScript);
+	var head = document.querySelector("head");
+	head.appendChild(newScript);
+	newScript.textContent = "";
 	newScript.remove();
 }
 
 (function() {
 	'use strict';
-	
+
+	// PRE
 	addReplacement('document.addEventListener("DOMContentLoaded",startGame,!1);', `
 		setTimeout(function() {
 			var DOMContentLoaded_event = document.createEvent("Event");
