@@ -5,8 +5,8 @@ function addReplacement(replacement, code, replaceit) {
 }
 
 function modifyCode(text) {
-	for (const [replacement, code] of Object.entries(replacements)) {
-		text = text.replaceAll(replacement, code[1] ? code[0] : replacement + code[0]);
+	for (const [replacement, [code, replaceIt]] of Object.entries(replacements)) {
+		text = text.replaceAll(replacement, replaceIt ? code : replacement + code);
 	}
 
 	var newScript = document.createElement("script");
@@ -42,7 +42,7 @@ function modifyCode(text) {
 	const publicUrl = "scripturl";
 	// https://stackoverflow.com/questions/22141205/intercept-and-alter-a-sites-javascript-using-greasemonkey
 	if (publicUrl == "scripturl") {
-		if (navigator.userAgent.indexOf("Firefox") != -1) {
+		if (navigator.userAgent.includes("Firefox")) {
 			window.addEventListener("beforescriptexecute", function(e) {
 				if (e.target.src.includes("https://miniblox.io/assets/index")) {
 					e.preventDefault();
