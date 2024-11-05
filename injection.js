@@ -29,6 +29,7 @@ function modifyCode(text) {
 			document.dispatchEvent(DOMContentLoaded_event);
 		}, 0);
 	`);
+	addReplacement('this.game.unleash.isEnabled("disable-ads")', 'true', true);
 	addReplacement('this.loader.loadAsync("textures/spritesheet.png")', 'this.loader.loadAsync("https://raw.githubusercontent.com/lostsys/sc-tes/main/spritesheet.png")', true);
 	addReplacement('const title = "/assets/default-92b37f60.png"', 'const title = "https://raw.githubusercontent.com/lostsys/sc-tes/main/default-92b37f60.png"', true);
 	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,16,3)', true);
