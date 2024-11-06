@@ -31,7 +31,7 @@ function modifyCode(text) {
 	`);
 	addReplacement('this.game.unleash.isEnabled("disable-ads")', 'true', true);
 	addReplacement('this.loader.loadAsync("textures/spritesheet.png")', 'this.loader.loadAsync("https://raw.githubusercontent.com/lostsys/sc-tes/main/spritesheet.png")', true);
-	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,32,3)', true);
+	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,16,3)', true);
 	addReplacement('this.composer = new EffectComposer(this.renderer);', `
 		this.afterimagePass = new AfterimagePass();
 		this.afterimagePass.uniforms["damp"].value = 0.96;
