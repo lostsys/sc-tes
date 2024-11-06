@@ -32,13 +32,6 @@ function modifyCode(text) {
 	addReplacement('this.game.unleash.isEnabled("disable-ads")', 'true', true);
 	addReplacement('this.loader.loadAsync("textures/spritesheet.png")', 'this.loader.loadAsync("https://raw.githubusercontent.com/lostsys/sc-tes/main/spritesheet.png")', true);
 	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,24,3)', true);
-	addReplacement('this.composer.addPass(new RenderPass(_.gameScene.scene,_.gameScene.camera)),', `
-		this.composer.addPass(new RenderPass(_.gameScene.scene,_.gameScene.camera)),
-			this.afterimagePass = new AfterimagePass(),
-			this.afterimagePass.uniforms["damp"].value = 0.96, // Adjust intensity
-			this.composer.addPass(this.afterimagePass),
-			this.afterimagePass.renderToScreen = true,),
-	`);
 
 	async function execute(src, oldScript) {
 		if (oldScript) oldScript.type = 'javascript/blocked';
