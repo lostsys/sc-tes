@@ -31,13 +31,16 @@ function modifyCode(text) {
 	`);
 	addReplacement('this.game.unleash.isEnabled("disable-ads")', 'true', true);
 	addReplacement('this.loader.loadAsync("textures/spritesheet.png")', 'this.loader.loadAsync("https://raw.githubusercontent.com/lostsys/sc-tes/main/spritesheet.png")', true);
-	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,16,3)', true);
-	addReplacement('this.composer = new EffectComposer(this.renderer);', `
-		this.afterimagePass = new AfterimagePass();
-		this.afterimagePass.uniforms["damp"].value = 0.96;
-		this.composer.addPass(this.afterimagePass);
-
-		this.afterimagePass.renderToScreen = true;
+	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,32,3)', true);
+	addReplacement('this.composer.addPass(new RenderPass(', `
+		this.composer.addPass(new RenderPass(
+			// Console log for testing if AfterimagePass is injected
+			console.log("Injecting AfterimagePass for motion blur"),
+			this.afterimagePass = new AfterimagePass(),
+			this.afterimagePass.uniforms["damp"].value = 0.96, // Adjust intensity
+			this.composer.addPass(this.afterimagePass),
+			this.afterimagePass.renderToScreen = true,
+		)
 	`);
 
 	async function execute(src, oldScript) {
