@@ -29,6 +29,10 @@ function modifyCode(text) {
 			document.dispatchEvent(DOMContentLoaded_event);
 		}, 0);
 	`);
+	addReplacement('children: "Spleef"', `
+                                children: "Spleef"
+                            }), jsxRuntimeExports.jsx("li", {
+                                children: "Bridge duels"`, true);
 	addReplacement('this.game.unleash.isEnabled("disable-ads")', 'true', true);
 	addReplacement('this.loader.loadAsync("textures/spritesheet.png")', 'this.loader.loadAsync("https://raw.githubusercontent.com/lostsys/sc-tes/main/spritesheet.png")', true);
 	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,24,3)', true);
