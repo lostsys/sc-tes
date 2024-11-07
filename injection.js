@@ -29,7 +29,6 @@ function modifyCode(text) {
 			document.dispatchEvent(DOMContentLoaded_event);
 		}, 0);
 	`);
-	addReplacement('children: "Spleef"', 'children: "Blitz Build"', true);
         addReplacement('this.game.unleash.isEnabled("disable-ads")', 'true', true);
 	addReplacement('this.loader.loadAsync("textures/spritesheet.png")', 'this.loader.loadAsync("https://raw.githubusercontent.com/lostsys/sc-tes/main/spritesheet.png")', true);
 	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,16,3)', true);
