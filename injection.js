@@ -25,8 +25,8 @@ function modifyCode(text) {
 		}, 0);
 	`);
 	addReplacement('this.loader.loadAsync("textures/spritesheet.png")', 'this.loader.loadAsync("https://raw.githubusercontent.com/heythereu/Miniblox-Textures/main/spritesheet.png")', true);
-	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,16,3)', true);
-	addReplacement('this.fog = new Fog(this),', 'this.clouds.generateClouds("add");', true);
+	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,32,3)', true);
+	addReplacement('this.fog = new Fog(this),', 'this.clouds = new Clouds(this),', true);
 	
 	async function execute(src, oldScript) {
 		if (oldScript) oldScript.type = 'javascript/blocked';
