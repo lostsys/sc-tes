@@ -26,9 +26,6 @@ function modifyCode(text) {
 	`);
 	addReplacement('this.loader.loadAsync("textures/spritesheet.png")', 'this.loader.loadAsync("https://raw.githubusercontent.com/heythereu/Miniblox-Textures/main/spritesheet.png")', true);
 	addReplacement('SliderOption("Render Distance ",2,8,3)', 'SliderOption("Render Distance ",2,32,3)', true);
-	addReplacement('midnight = new Color("#151B54")', 'midnight = new Color("#0A1433")', true);
-	addReplacement('sunrise = new Color("#fd5e53")', 'sunrise = new Color("#8B3FE0")', true);
-	addReplacement('noon = new Color("#ADD8E6")', 'noon = new Color("#4FD1C5")', true);
 	async function execute(src, oldScript) {
 		if (oldScript) oldScript.type = 'javascript/blocked';
 		await fetch(src).then(e => e.text()).then(e => modifyCode(e));
